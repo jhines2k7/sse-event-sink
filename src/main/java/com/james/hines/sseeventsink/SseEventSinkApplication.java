@@ -75,7 +75,7 @@ public class SseEventSinkApplication {
 	    @Autowired
 	    SseService sseService;
 
-        @GetMapping("/events/subscribe")
+        @GetMapping(path = "/events/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
         public SseEmitter subscribe() {
             return sseService.getMessages();
         }
