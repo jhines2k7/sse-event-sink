@@ -15,15 +15,16 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @SpringBootApplication
 public class SseEventSinkApplication {
 	interface SseSink {
-		String INPUT_CHANNEL = "occasionapidestination";
+		String INPUT_CHANNEL = "ideafoundryoccasionapiresults";
 
 		@Input
-		SubscribableChannel occasionapidestination();
+		SubscribableChannel ideafoundryoccasionapiresults();
 	}
 
 	@Controller
@@ -31,10 +32,9 @@ public class SseEventSinkApplication {
     class SseEventsController {
         private final CopyOnWriteArrayList<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
-        @CrossOrigin(origins = "http://localhost:9000")
+        @CrossOrigin
         @GetMapping(path = "/events/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
         public SseEmitter subscribe() {
-            //return sseService.getMessages();
             SseEmitter emitter = new SseEmitter();
             this.emitters.add(emitter);
 
@@ -45,12 +45,17 @@ public class SseEventSinkApplication {
         }
 
         @StreamListener(SseSink.INPUT_CHANNEL)
-        void consumeEvent(String event) {
-            LoggerFactory.getLogger(SseEventSinkApplication.class).info("Consuming event: '{}'", event);
+        void consume(String data) {
+            LoggerFactory.getLogger(SseEventSinkApplication.class).info("Consuming event: '{}'", data);
             List<SseEmitter> deadEmitters = new ArrayList<>();
             this.emitters.forEach(emitter -> {
+                SseEmitter.SseEventBuilder builder = SseEmitter.event()
+                        .data(data)
+                        .id(UUID.randomUUID().toString())
+                        .name("ideafoundry-sse")
+                        .reconnectTime(5_000L);
                 try {
-                    emitter.send(event);
+                    emitter.send(builder);
                 }
                 catch (Exception e) {
                     deadEmitters.add(emitter);
