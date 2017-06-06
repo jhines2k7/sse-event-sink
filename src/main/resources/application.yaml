@@ -3,12 +3,5 @@ spring:
     stream:
       kafka:
         binder:
-          brokers: 54.236.16.2
-          zkNodes: 54.236.16.2
-
-
-
-
-
-
-
+          brokers: 54.236.56.191
+          zkNodes: 54.236.56.191

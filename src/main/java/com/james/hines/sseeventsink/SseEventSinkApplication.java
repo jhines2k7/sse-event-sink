@@ -21,10 +21,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @SpringBootApplication
 public class SseEventSinkApplication {
 	interface SseSink {
-		String INPUT_CHANNEL = "ideafoundryoccasionapiresponse2";
+		String INPUT_CHANNEL = "ideafoundryoccasionapiresponse5";
 
 		@Input
-		SubscribableChannel ideafoundryoccasionapiresponse2();
+		SubscribableChannel ideafoundryoccasionapiresponse5();
 	}
 
 	@Controller
