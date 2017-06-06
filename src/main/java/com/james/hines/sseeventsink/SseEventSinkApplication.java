@@ -21,10 +21,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @SpringBootApplication
 public class SseEventSinkApplication {
 	interface SseSink {
-		String INPUT_CHANNEL = "ideafoundryoccasionapiresults";
+		String INPUT_CHANNEL = "ideafoundryoccasionapiresponse2";
 
 		@Input
-		SubscribableChannel ideafoundryoccasionapiresults();
+		SubscribableChannel ideafoundryoccasionapiresponse2();
 	}
 
 	@Controller
@@ -35,7 +35,7 @@ public class SseEventSinkApplication {
         @CrossOrigin
         @GetMapping(path = "/events/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
         public SseEmitter subscribe() {
-            SseEmitter emitter = new SseEmitter();
+            SseEmitter emitter = new SseEmitter(60*60*2*1000L);
             this.emitters.add(emitter);
 
             emitter.onCompletion(() -> this.emitters.remove(emitter));
